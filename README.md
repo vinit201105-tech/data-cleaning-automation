@@ -39,8 +39,8 @@ A sleek, beginner-friendly web application that automatically cleans messy datas
    ```
 
 4. **Open the project:**
-   Click the link below or paste it into your browser to view the application:
-   **[http://127.0.0.1:5000/](http://127.0.0.1:5000/)**
+   Click the link below to view the live application:
+   **[https://data-cleaning-automation-cams.onrender.com](https://data-cleaning-automation-cams.onrender.com)**
 
 ## About
 This project was designed as a simple yet powerful tool for college internships and beginners looking to understand the integration of a Python data-processing backend with a modern web dashboard.
