@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Cleaning & Reporting Automation</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h2>DataFlow</h2>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" id="navDashboard">
+                    <span class="icon">📊</span>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item" id="navFiles">
+                    <span class="icon">📁</span>
+                    Files
+                </a>
+                <a href="#" class="nav-item" id="navSettings">
+                    <span class="icon">⚙️</span>
+                    Settings
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-titles">
+                    <h1>Data Cleaning & Reporting Automation</h1>
+                    <p>Clean your datasets effortlessly and generate insightful reports.</p>
+                </div>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff" alt="User Profile" class="avatar">
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <div id="dashboardView">
+                <div class="content-grid">
+                
+                <!-- Upload Section -->
+                <section class="card upload-section">
+                    <h3>Data Source</h3>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">☁️</div>
+                        <h4>Drag & Drop your CSV file here</h4>
+                        <p>or</p>
+                        <input type="file" id="fileInput" accept=".csv" hidden>
+                        <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()">Browse Files</button>
+                    </div>
+                    <div class="divider"><span>OR</span></div>
+                    <button class="btn btn-primary w-100" id="btnLoadSample">Load Sample Sales Data</button>
+                    
+                    <!-- File Info -->
+                    <div class="file-info hidden" id="fileInfo">
+                        <div class="file-details">
+                            <span class="file-icon">📄</span>
+                            <span id="fileName">data.csv</span>
+                        </div>
+                        <span class="status-badge success">Uploaded</span>
+                    </div>
+                </section>
+
+                <!-- Actions Section -->
+                <section class="card actions-section">
+                    <h3>Actions</h3>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary action-btn" id="btnCleanData" disabled>
+                            <span class="icon">✨</span> Clean Data
+                        </button>
+                        <button class="btn btn-secondary action-btn" id="btnGenerateReport" disabled>
+                            <span class="icon">📈</span> Generate Report
+                        </button>
+                        <a href="/download/cleaned" class="btn btn-outline action-btn hidden" id="btnDownloadCleaned">
+                            <span class="icon">⬇️</span> Download Cleaned CSV
+                        </a>
+                        <a href="/download/report" class="btn btn-outline action-btn hidden" id="btnDownloadReport">
+                            <span class="icon">📄</span> Download Report
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Statistics Section -->
+                <section class="card stats-section">
+                    <h3>Cleaning Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-label">Total Rows</span>
+                            <span class="stat-value" id="statTotalRows">-</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Duplicates Removed</span>
+                            <span class="stat-value highlight-red" id="statDuplicates">-</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Missing Values Fixed</span>
+                            <span class="stat-value highlight-green" id="statMissing">-</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Data Preview Section -->
+                <section class="card preview-section full-width">
+                    <div class="section-header">
+                        <h3>Data Preview (All Rows)</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table" id="dataTable">
+                            <thead>
+                                <tr id="tableHeader">
+                                    <th>No data loaded</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <tr>
+                                    <td>Upload a file or load sample data to preview.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Charts Section -->
+                <section class="card charts-section full-width hidden" id="chartsSection">
+                    <h3>Report Visualizations</h3>
+                    <div class="charts-grid">
+                        <div class="chart-container">
+                            <canvas id="barChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                    </div>
+                </section>
+            </div>
+
+            <!-- Files View -->
+            <div id="filesView" class="hidden">
+                <div class="card full-width">
+                    <h3>Uploaded Files History</h3>
+                    <p style="color: var(--text-muted); margin-top: 16px;">This feature is coming soon. You'll be able to see a history of all your uploaded datasets and reports here.</p>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settingsView" class="hidden">
+                <div class="card full-width">
+                    <h3>Application Settings</h3>
+                    <div style="margin-top: 16px;">
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="darkModeToggle"> Enable Dark Mode (Coming Soon)
+                        </label>
+                        <br>
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" checked> Auto-generate reports after cleaning
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
